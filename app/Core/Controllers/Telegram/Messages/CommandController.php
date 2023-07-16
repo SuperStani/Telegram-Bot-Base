@@ -4,6 +4,7 @@ namespace App\Core\Controllers\Telegram\Messages;
 
 use App\Core\Controllers\Telegram\MessageController;
 use App\Core\Controllers\Telegram\UserController;
+use App\Core\Logger\LoggerInterface;
 use App\Integrations\Telegram\Message;
 
 
@@ -12,11 +13,11 @@ class CommandController extends MessageController
 
     public function __construct(
         Message $message,
-        UserController $user
+        UserController $user,
+        LoggerInterface $logger
     )
     {
-        $this->message = $message;
-        $this->user = $user;
+        parent::__construct($message, $user, $logger);
     }
 
     public function start($param = null): ?array

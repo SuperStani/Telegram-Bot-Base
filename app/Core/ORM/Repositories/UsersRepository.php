@@ -25,7 +25,7 @@ class UsersRepository
     public function getPage(int $user_id): ?string
     {
         $query = "SELECT page FROM " . self::$table . " WHERE id = ?";
-        return $this->db->query($query, $user_id)->fetch()['id'] ?? '';
+        return $this->db->query($query, $user_id)->fetch()['page'] ?? '';
     }
 
     public function save(int $user_id): bool

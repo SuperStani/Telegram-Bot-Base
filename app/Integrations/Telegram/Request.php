@@ -19,13 +19,13 @@ class Request
         return self::$client;
     }
 
-    public static function get(string $method, array $args = [], $bot_token = null): ?array
+    public static function get(string $method, array $args = []): ?array
     {
         $http = self::getClient();
         $query_params = http_build_query($args);
-        $endpoint = "https://api.telegram.org/bot" . ($bot_token ?? GeneralConfigurations::BOT_TOKEN) . "/" . $method . "?" . $query_params;
+        $endpoint = "https://api.telegram.org/bot" . GeneralConfigurations::BOT_TOKEN . "/" . $method . "?" . $query_params;
         try {
-            $res = $http->get($endpoint, ["timeout" => 5, "connect_timeout" => 2]);
+            $res = $http->get($endpoint, ["timeout" => 1, "connect_timeout" => 1]);
             if ($res->getStatusCode() == 200) {
                 $result = json_decode($res->getBody(), true);
             } else {
