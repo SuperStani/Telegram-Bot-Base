@@ -1,1 +1,1 @@
-# TelegramBotBase by love from SuperStani
+# TelegramBotBase with love by SuperStani
