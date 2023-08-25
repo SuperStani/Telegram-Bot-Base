@@ -2,29 +2,40 @@
 
 namespace App\Integrations\Telegram;
 
+use App\Integration\Telegram\Enums\Chat;
+use App\Integration\Telegram\Enums\Photo;
+use App\Integration\Telegram\Enums\Video;
+use App\Integrations\Telegram\Enums\Types\UpdateType;
+use App\Integrations\Telegram\Enums\Update;
+
 class Message
 {
+    public int $id;
     public ?string $text;
-    public ?int $id;
-    public ?string $chat_type;
-    public ?int $chat_id;
-    public mixed $photo;
-    public mixed $video;
-    public ?array $keyboard;
+    public Chat $chat;
+    public ?Photo $photo;
+    public ?Video $video;
 
     public function __construct(Update $update)
     {
-        $message = $update->getUpdate();
-        if ($update->getType() == 'callback_query')
-            $message = $message->message;
-        $this->text = $message->text ?? null;
-        $this->id = $message->message_id;
-        $this->chat_id = $message->chat->id;
-        $this->chat_type = $message->chat->type;
-        $this->photo = $message->photo ?? null;
-        $this->video = $message->video ?? null;
-        $this->keyboard = $message->reply_markup->inline_keyboard ?? null;
+        $data = $update->getType() == UpdateType::MESSAGE ? $update->getData()->message : $update->getData()->callback_data;
 
+        $this->id = $data->message_id;
+        $this->text = $data->text ?? null;
+        $this->chat = new Chat($data->chat->id, $data->chat->first_name, $data->chat->username ?? null, $data->chat->type);
+        $this->video = isset($data->video) ?
+            new Video(
+                $data->video->file_id,
+                $data->video->unique_id,
+                $data->video->width,
+                $data->video->height,
+                $data->video->duration,
+                $data->video->thumbnail,
+                $data->video->file_name,
+                $data->video->file_size
+            ) : null;
+        $this->photo = isset($data->photo) ?
+            new Photo() : null;
         $message = null;
     }
 
@@ -34,13 +45,13 @@ class Message
             $keyboard["inline_keyboard"] = $menu;
         else
             $keyboard = null;
-        return TelegramClient::sendMessage($this->chat_id, $text, $parse, null, $disable_preview, null, null, $reply_to_message, null, $keyboard);
+        return TelegramClient::sendMessage($this->chat->id, $text, $parse, null, $disable_preview, null, null, $reply_to_message, null, $keyboard);
     }
 
 
     public function reply_photo(string $photo, string $caption = "", $menu = null, $parse = "Markdown", bool $disable_preview = false, $reply_to_message = null): ?array
     {
-        return TelegramClient::sendPhoto($this->chat_id, $photo, $caption, $menu, $parse, null, null, null, $reply_to_message, null);
+        return TelegramClient::sendPhoto($this->chat->id, $photo, $caption, $menu, $parse, null, null, null, $reply_to_message, null);
     }
 
     public function edit_media(string $media, string $caption = "", $menu = null, string $type_media = 'photo', $parse = "Markdown", bool $disable_preview = false, $reply_to_message = null): ?array
@@ -49,7 +60,7 @@ class Message
             $keyboard["inline_keyboard"] = $menu;
         else
             $keyboard = null;
-        return TelegramClient::editMessageMedia($this->chat_id, $this->id, null, ["type" => $type_media, "media" => $media, "caption" => $caption, "parse_mode" => $parse], $keyboard);
+        return TelegramClient::editMessageMedia($this->chat->id, $this->id, null, ["type" => $type_media, "media" => $media, "caption" => $caption, "parse_mode" => $parse], $keyboard);
     }
 
 
@@ -59,17 +70,17 @@ class Message
             $keyboard["inline_keyboard"] = $menu;
         else
             $keyboard = null;
-        return TelegramClient::editMessageText($this->chat_id, $this->id, null, $text, $parse, null, $disable_preview, $keyboard);
+        return TelegramClient::editMessageText($this->chat->id, $this->id, null, $text, $parse, null, $disable_preview, $keyboard);
     }
 
     public function delete(): ?array
     {
-        return TelegramClient::deleteMessage($this->chat_id, $this->id);
+        return TelegramClient::deleteMessage($this->chat->id, $this->id);
     }
 
     public function copy($chat_id): ?array
     {
-        return TelegramClient::copyMessage($chat_id, $this->chat_id, $this->id);
+        return TelegramClient::copyMessage($chat_id, $this->chat->id, $this->id);
     }
 
     public function find(string $text): bool
