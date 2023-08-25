@@ -9,16 +9,13 @@ abstract class MessageController extends Controller
 {
     protected Message $message;
 
-    protected LoggerInterface $logger;
-
     public function __construct(
         Message $message,
         UserController $user,
         LoggerInterface $logger
     )
     {
+        parent::__construct($user, $logger);
         $this->message = $message;
-        $this->user = $user;
-        $this->logger = $logger;
     }
 }

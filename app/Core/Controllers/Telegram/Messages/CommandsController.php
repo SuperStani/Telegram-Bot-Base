@@ -10,7 +10,6 @@ use App\Integrations\Telegram\Message;
 
 class CommandsController extends MessageController
 {
-
     public function __construct(
         Message $message,
         UserController $user,
@@ -40,12 +39,4 @@ class CommandsController extends MessageController
         }
     }
 
-
-    public function check()
-    {
-        $e = explode(" ", $this->message->text);
-        $method = str_replace("/", "", $e[0]);
-        unset($e[0]);
-        return $this->process($method, $e);
-    }
 }

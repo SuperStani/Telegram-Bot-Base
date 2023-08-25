@@ -52,7 +52,7 @@ class WebHookService
     {
         $message = $this->container->get(Message::class);
         if ($message->text->command()) {
-            $data = str_replace(" ", "|", $message->text);
+            $data = str_replace(["/", " "], ["", "|"], $message->text);
             $data = "Commands:$data";
         } else {
             $userController = $this->container->get(UserController::class);
