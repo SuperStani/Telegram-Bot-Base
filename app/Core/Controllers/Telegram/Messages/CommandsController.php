@@ -8,7 +8,7 @@ use App\Core\Logger\LoggerInterface;
 use App\Integrations\Telegram\Message;
 
 
-class CommandController extends MessageController
+class CommandsController extends MessageController
 {
 
     public function __construct(
@@ -46,6 +46,6 @@ class CommandController extends MessageController
         $e = explode(" ", $this->message->text);
         $method = str_replace("/", "", $e[0]);
         unset($e[0]);
-        return $this->callAction($method, $e);
+        return $this->process($method, $e);
     }
 }

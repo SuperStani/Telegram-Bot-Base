@@ -17,4 +17,6 @@ interface GeneralConfigurations
     ];
 
     public const DEFAULT_LANG = LanguageCode::IT;
+
+    public const DI_CONTAINER_PATH =  "/DIConfigs.php";
 }

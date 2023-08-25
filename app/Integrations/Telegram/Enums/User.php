@@ -24,4 +24,9 @@ class User
         $this->username = $data->username ?? null;
         $this->language_code = $data->language_code ?? GeneralConfigurations::DEFAULT_LANG;
     }
+
+    public function getMention(): string
+    {
+        return "[" . $this->first_name . "](tg://user?id=" . $this->id . ")";
+    }
 }
