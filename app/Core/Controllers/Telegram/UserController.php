@@ -3,69 +3,50 @@
 namespace App\Core\Controllers\Telegram;
 
 use App\Configs\GeneralConfigurations;
+use App\Core\ORM\Entities\UserEntity;
 use App\Core\Services\CacheService;
-use App\Integrations\Telegram\TelegramClient;
+use App\Integration\Telegram\Enums\User;
 use App\Core\ORM\Repositories\UsersRepository;
-use App\Integrations\Telegram\Update;
 
 
-class UserController extends Controller
+class UserController
 {
-    public int $id;
-    public string $name;
-    public string $mention;
+    private User $user;
     private UsersRepository $usersRepository;
-    private CacheService $cacheService;
 
     public function __construct(
-        Update $user,
-        UsersRepository $userRepo,
-        CacheService $cacheService
+        User $user,
+        UsersRepository $userRepo
     )
     {
-        $user = $user->getUpdate();
-        $this->id = $user->from->id;
-        $this->name = $user->from->first_name;
-        $this->mention = "[" . $user->from->first_name . "](tg://user?id=" . $user->from->id . ")";
+        $this->user = $user;
         $this->usersRepository = $userRepo;
-        $this->cacheService = $cacheService;
     }
 
-    public function getMe(): ?array
-    {
-        return TelegramClient::getChat($this->id)['result'] ?? null;
-    }
-
-    public function save()
+    public function save(): int
     {
         try {
-            $this->usersRepository->save($this->id);
+            $user = new UserEntity();
+            $user->setId($this->user->id);
+            $this->usersRepository->insert($user);
+            return $user->getId();
         } catch (\Exception $e) {
-
+            return 0;
         }
-    }
-
-    public function update()
-    {
-        $this->usersRepository->updateLastAction($this->id);
     }
 
     public function page($text = '')
     {
-        $this->cacheService->setUserPage($this->id, $text);
-        $this->usersRepository->page($this->id, $text);
+        $this->usersRepository->updatePageByUserId($this->user->id, $text);
     }
 
     public function getPage(): ?string
     {
-        if (($page = $this->cacheService->getUserPage($this->id)) == false) {
-            $page = $this->usersRepository->getPage($this->id);
-        }
-        return $page;
+        return $this->usersRepository->getPageByUserId($this->user->id);
     }
 
     public function isAdmin(): bool
     {
-        return in_array($this->id, GeneralConfigurations::ADMINS);
+        return in_array($this->user->id, GeneralConfigurations::ADMINS);
     }
 }

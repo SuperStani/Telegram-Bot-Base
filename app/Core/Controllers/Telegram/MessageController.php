@@ -3,13 +3,12 @@
 namespace App\Core\Controllers\Telegram;
 
 use App\Core\Logger\LoggerInterface;
-use App\Integrations\Telegram\Message;
+use App\Integrations\Telegram\Enums\Message;
+
 
 abstract class MessageController extends Controller
 {
     protected Message $message;
-
-    protected LoggerInterface $logger;
 
     public function __construct(
         Message $message,
@@ -17,8 +16,7 @@ abstract class MessageController extends Controller
         LoggerInterface $logger
     )
     {
+        parent::__construct($user, $logger);
         $this->message = $message;
-        $this->user = $user;
-        $this->logger = $logger;
     }
 }

@@ -3,13 +3,12 @@
 namespace App\Core\Controllers\Telegram;
 
 use App\Core\Logger\LoggerInterface;
-use App\Integrations\Telegram\Query;
+use App\Integrations\Telegram\Enums\Query;
 
 
 abstract class QueryController extends Controller
 {
     protected Query $query;
-    protected LoggerInterface $logger;
 
     public function __construct(
         Query $query,
@@ -17,8 +16,7 @@ abstract class QueryController extends Controller
         LoggerInterface $logger
     )
     {
+        parent::__construct($user, $logger);
         $this->query = $query;
-        $this->user = $user;
-        $this->logger = $logger;
     }
 }
