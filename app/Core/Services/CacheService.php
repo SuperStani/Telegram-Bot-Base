@@ -2,13 +2,12 @@
 
 namespace App\Core\Services;
 
-use App\Core\Controllers\RedisController;
+use App\Core\Controllers\Cache\RedisController;
 use App\Core\Logger\LoggerInterface;
 
 class CacheService
 {
     private RedisController $redisController;
-
 
     private LoggerInterface $logger;
 

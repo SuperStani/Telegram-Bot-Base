@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Integrations\Telegram;
+namespace App\Integrations\Telegram\Enums;
+
+use App\Integrations\Telegram\TelegramClient;
 
 class Query
 {
@@ -10,11 +12,10 @@ class Query
 
     public function __construct(Update $update, Message $message)
     {
-        $update = $update->getUpdate();
+        $update = $update->getData();
         $this->data = $update->data ?? null;
         $this->id = $update->id ?? null;
         $this->message = $message;
-        $update = null;
     }
 
     public function alert(string $text = "💙", bool $show = false, string $url = null): ?array
@@ -25,6 +26,6 @@ class Query
     public function editButton(array $menu): ?array
     {
         $keyboard["inline_keyboard"] = $menu;
-        return TelegramClient::editMessageReplyMarkup($this->message->chat_id, $this->message->id, null, $keyboard);
+        return TelegramClient::editMessageReplyMarkup($this->message->chat->id, $this->message->id, null, $keyboard);
     }
 }

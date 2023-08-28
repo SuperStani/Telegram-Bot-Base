@@ -3,7 +3,8 @@
 namespace App\Core\Controllers\Telegram;
 
 use App\Core\Logger\LoggerInterface;
-use App\Integrations\Telegram\Message;
+use App\Integrations\Telegram\Enums\Message;
+
 
 abstract class MessageController extends Controller
 {

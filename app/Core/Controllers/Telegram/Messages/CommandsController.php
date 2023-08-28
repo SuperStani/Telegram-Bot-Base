@@ -5,7 +5,7 @@ namespace App\Core\Controllers\Telegram\Messages;
 use App\Core\Controllers\Telegram\MessageController;
 use App\Core\Controllers\Telegram\UserController;
 use App\Core\Logger\LoggerInterface;
-use App\Integrations\Telegram\Message;
+use App\Integrations\Telegram\Enums\Message;
 
 
 class CommandsController extends MessageController
@@ -34,7 +34,7 @@ class CommandsController extends MessageController
             $param = explode("_", $param);
             switch ($param[0]) {
                 default:
-                   break;
+                    break;
             }
         }
     }
