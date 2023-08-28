@@ -1,7 +1,7 @@
 {
   "name": "superstani/telegram_bot",
   "type": "library",
-  "description": "my personal framework wor telegram bot developments",
+  "description": "my personal framework for telegram bot developments",
   "keywords": [
     "telegram",
     "bot",

@@ -12,7 +12,7 @@ class Update
     public function __construct(mixed $update)
     {
         $this->data = $update;
-        $this->type = isset($this->data->callback_query) ? UpdateType::CALLBACK_QUERY : UpdateType::MESSAGE;
+        $this->type = isset($this->data->callback_query) ? UpdateType::CALLBACK_QUERY : (isset($this->data->message) ? UpdateType::MESSAGE : UpdateType::UNKNOWN);
     }
 
     public function getData(): mixed

@@ -3,41 +3,38 @@
 
 namespace App\Core\ORM\Repositories;
 
+use App\Core\ORM\Entities\UserEntity;
 
-use App\Core\ORM\DB;
-
-class UsersRepository
+class UsersRepository extends AbstractRepository
 {
-    private DB $db;
     private static string $table = "Users";
 
-    public function __construct(DB $db)
+    public function insert(UserEntity $userEntity): void
     {
-        $this->db = $db;
+        $query = "INSERT INTO " . self::$table . " SET id = ?, page = ?";
+        $this->db->query($query, $userEntity->getId(), $userEntity->getPage());
+        $userEntity->setId($this->db->getLastInsertId());
     }
 
-    public function page(int $user_id, string|int $text = '')
+    public function update(UserEntity $user)
+    {
+
+    }
+
+    public function updatePageByUserId(int $user_id, int|string $text)
     {
         $query = "UPDATE " . self::$table . " SET page = ? WHERE id = ?";
         $this->db->query($query, $text, $user_id);
+        $this->cacheService->setKey(self::class . "|page:$user_id", $text, 30);
     }
 
-    public function getPage(int $user_id): ?string
+    public function getPageByUserId(int $user_id): ?string
     {
-        $query = "SELECT page FROM " . self::$table . " WHERE id = ?";
-        return $this->db->query($query, $user_id)->fetch()['page'] ?? '';
-    }
-
-    public function save(int $user_id): bool
-    {
-        $query = "INSERT INTO " . self::$table . " SET id = ?";
-        return $this->db->query($query, $user_id) != null;
-    }
-
-    public function updateLastAction(int $user_id): bool
-    {
-        $query = "UPDATE " . self::$table . " SET datetime_last_update = NOW() WHERE id = ?";
-        return $this->db->query($query, $user_id) != null;
+        if (($page = $this->cacheService->getKey(self::class . "|page:$user_id")) === false) {
+            $query = "SELECT page FROM " . self::$table . " WHERE id = ?";
+            return $this->db->query($query, $user_id)->fetch()['page'] ?? '';
+        }
+        return $page;
     }
 
 }

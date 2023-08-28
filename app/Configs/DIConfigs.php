@@ -3,7 +3,7 @@
 use  App\Core\Services\Telegram\UpdateService;
 use App\Configs\DatabaseCredentials;
 use App\Configs\RedisConfigurations;
-use App\Core\Controllers\RedisController;
+use App\Core\Controllers\Cache\RedisController;
 use App\Core\Logger\Logger;
 use App\Core\Logger\LoggerInterface;
 use App\Core\ORM\DB;
@@ -35,7 +35,7 @@ $conf = [
             RedisConfigurations::SOCKET
         );
     }),
-    Update::class => factory(function() {
+    Update::class => factory(function () {
         return UpdateService::get();
     })
 ];

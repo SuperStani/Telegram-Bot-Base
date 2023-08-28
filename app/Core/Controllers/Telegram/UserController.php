@@ -3,6 +3,7 @@
 namespace App\Core\Controllers\Telegram;
 
 use App\Configs\GeneralConfigurations;
+use App\Core\ORM\Entities\UserEntity;
 use App\Core\Services\CacheService;
 use App\Integration\Telegram\Enums\User;
 use App\Core\ORM\Repositories\UsersRepository;
@@ -12,45 +13,36 @@ class UserController
 {
     private User $user;
     private UsersRepository $usersRepository;
-    private CacheService $cacheService;
 
     public function __construct(
         User $user,
-        UsersRepository $userRepo,
-        CacheService $cacheService
+        UsersRepository $userRepo
     )
     {
         $this->user = $user;
         $this->usersRepository = $userRepo;
-        $this->cacheService = $cacheService;
     }
 
-    public function save()
+    public function save(): int
     {
         try {
-            $this->usersRepository->save($this->user->id);
+            $user = new UserEntity();
+            $user->setId($this->user->id);
+            $this->usersRepository->insert($user);
+            return $user->getId();
         } catch (\Exception $e) {
-
+            return 0;
         }
-    }
-
-    public function update()
-    {
-        $this->usersRepository->updateLastAction($this->user->id);
     }
 
     public function page($text = '')
     {
-        $this->cacheService->setUserPage($this->user->id, $text);
-        $this->usersRepository->page($this->user->id, $text);
+        $this->usersRepository->updatePageByUserId($this->user->id, $text);
     }
 
     public function getPage(): ?string
     {
-        if (($page = $this->cacheService->getUserPage($this->user->id)) == false) {
-            $page = $this->usersRepository->getPage($this->user->id);
-        }
-        return $page;
+        return $this->usersRepository->getPageByUserId($this->user->id);
     }
 
     public function isAdmin(): bool

@@ -39,4 +39,23 @@ class CacheService
         }
     }
 
+    public function setKey(string $key, string $value, int $expire_time = null)
+    {
+        try {
+            $this->redisController->setKey($key, $value, $expire_time);
+        } catch (\Exception $e) {
+
+        }
+    }
+
+    public function getKey(string $key): false|string|int
+    {
+        try {
+            return $this->redisController->getKey($key);
+        } catch (\Exception $e) {
+            $this->logger->warning("Redis get key error", $e->getMessage());
+            return false;
+        }
+    }
+
 }

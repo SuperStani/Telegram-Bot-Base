@@ -7,7 +7,6 @@ namespace App\Integration\Telegram\Enums;
 use App\Configs\GeneralConfigurations;
 use App\Integrations\Telegram\Enums\Types\UpdateType;
 use App\Integrations\Telegram\Enums\Update;
-use App\Integrations\Telegram\Message;
 
 class User
 {
