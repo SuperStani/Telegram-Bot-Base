@@ -13,8 +13,8 @@ use Psr\Container\ContainerInterface;
 
 class WebHookService
 {
-    private ContainerInterface $container;
     private const CONTROLLERS_CLASS_NAME_DEFAULT = "App\\Core\\Controllers\\Telegram";
+    private ContainerInterface $container;
 
     public function __construct(ContainerInterface $container)
     {
@@ -30,7 +30,7 @@ class WebHookService
         $update = $this->container->get(Update::class);
         if ($update->getType() == UpdateType::CALLBACK_QUERY) {
             $this->processCallbackControllerClass($update->getData()->data);
-        } else if($update->getType() == UpdateType::MESSAGE) {
+        } else if ($update->getType() == UpdateType::MESSAGE) {
             $this->processMessageControllerClass();
         } else {
             die('Unknown request');
@@ -44,23 +44,6 @@ class WebHookService
     private function processCallbackControllerClass(string $data): void
     {
         $this->processController($data, 'Query');
-    }
-
-    /**
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     */
-    private function processMessageControllerClass(): void
-    {
-        $message = $this->container->get(Message::class);
-        if ($message->text->command()) {
-            $data = str_replace(["/", " "], ["", "|"], $message->text);
-            $data = "Commands:$data";
-        } else {
-            $userController = $this->container->get(UserController::class);
-            $data = $userController->getPage();
-        }
-        $this->processController($data, 'Message');
     }
 
     /**
@@ -81,5 +64,22 @@ class WebHookService
             $logger = $this->container->get(LoggerInterface::class);
             $logger->error("$controllerClass doesn't exists", $data);
         }
+    }
+
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    private function processMessageControllerClass(): void
+    {
+        $message = $this->container->get(Message::class);
+        if ($message->text->command()) {
+            $data = str_replace(["/", " "], ["", "|"], $message->text);
+            $data = "Commands:$data";
+        } else {
+            $userController = $this->container->get(UserController::class);
+            $data = $userController->getPage();
+        }
+        $this->processController($data, 'Message');
     }
 }

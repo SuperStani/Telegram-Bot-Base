@@ -3,7 +3,6 @@
 namespace App\Core\Controllers\Telegram;
 
 use App\Core\Logger\LoggerInterface;
-use App\Integration\Telegram\Enums\User;
 
 abstract class Controller
 {

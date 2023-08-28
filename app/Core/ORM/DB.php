@@ -5,10 +5,13 @@ namespace App\Core\ORM;
 
 
 use App\Core\Logger\LoggerInterface;
+use PDO;
+use PDOException;
+use PDOStatement;
 
 class DB
 {
-    private ?\PDO $instance;
+    private ?PDO $instance;
 
     private LoggerInterface $logger;
 
@@ -33,20 +36,7 @@ class DB
         $this->instance = null;
     }
 
-    private function initialize(): ?\PDO
-    {
-        if ($this->instance === null) {
-            try {
-                $this->instance = new \PDO("mysql:host=$this->host;port=$this->port;dbname=$this->selectedDB", $this->username, $this->password);
-            } catch (\PDOException $e) {
-                $this->logger->critical("Database connection failed", $e->getMessage());
-                return null;
-            }
-        }
-        return $this->instance;
-    }
-
-    public function query($stmtQuery, ...$args): ?\PDOStatement
+    public function query($stmtQuery, ...$args): ?PDOStatement
     {
         $conn = $this->initialize();
         if ($conn !== null) {
@@ -54,7 +44,7 @@ class DB
             foreach ($args as $key => &$value) {
                 $key = $key + 1;
                 if (is_numeric($value)) {
-                    $stmt->bindParam($key, $value, \PDO::PARAM_INT);
+                    $stmt->bindParam($key, $value, PDO::PARAM_INT);
                 } else {
                     $stmt->bindParam($key, $value);
                 }
@@ -66,6 +56,19 @@ class DB
         }
         $this->logger->error("Query failed", $stmtQuery);
         return null;
+    }
+
+    private function initialize(): ?PDO
+    {
+        if ($this->instance === null) {
+            try {
+                $this->instance = new PDO("mysql:host=$this->host;port=$this->port;dbname=$this->selectedDB", $this->username, $this->password);
+            } catch (PDOException $e) {
+                $this->logger->critical("Database connection failed", $e->getMessage());
+                return null;
+            }
+        }
+        return $this->instance;
     }
 
     public function getLastInsertId(): ?string

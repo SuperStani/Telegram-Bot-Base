@@ -3,21 +3,13 @@
 namespace App\Integrations\Telegram;
 
 use App\Configs\GeneralConfigurations;
-use GuzzleHttp\Exception\GuzzleException;
-
+use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Request
 {
     private static ?Client $client = null;
-
-    private static function getClient(): Client
-    {
-        if (self::$client === null) {
-            self::$client = new Client();
-        }
-        return self::$client;
-    }
 
     public static function get(string $method, array $args = []): ?array
     {
@@ -35,7 +27,7 @@ class Request
                     "description" => "Bad request!"
                 ];
             }
-        } catch (GuzzleException | \Exception $e) {
+        } catch (GuzzleException | Exception $e) {
             $result = [
                 "ok" => false,
                 "error_code" => $e->getCode(),
@@ -45,5 +37,13 @@ class Request
         }
 
         return $result;
+    }
+
+    private static function getClient(): Client
+    {
+        if (self::$client === null) {
+            self::$client = new Client();
+        }
+        return self::$client;
     }
 }
