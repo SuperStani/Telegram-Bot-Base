@@ -29,6 +29,7 @@ class CommandsController extends MessageController
             }
             $menu[] = [["text" => "TEST USER", "callback_data" => "Post:new"]];
             $text = "Test message";
+            $this->logger->debug($text);;
             return $this->message->reply($text, $menu);
         } else {
             $param = explode("_", $param);
