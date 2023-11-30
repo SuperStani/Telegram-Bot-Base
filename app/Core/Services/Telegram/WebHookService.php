@@ -9,9 +9,7 @@ use App\Core\Logger\LoggerInterface;
 use App\Integrations\Telegram\Enums\Message;
 use App\Integrations\Telegram\Enums\Types\UpdateType;
 use App\Integrations\Telegram\Enums\Update;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 class WebHookService
 {
@@ -24,10 +22,10 @@ class WebHookService
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function handleRequest(): void
+    public function handleRequest()
     {
         $update = $this->container->get(Update::class);
         if ($update->getType() == UpdateType::CALLBACK_QUERY) {
@@ -40,8 +38,8 @@ class WebHookService
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     private function processCallbackControllerClass(string $data): void
     {
@@ -49,8 +47,8 @@ class WebHookService
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
     private function processMessageControllerClass(): void
     {
@@ -66,10 +64,10 @@ class WebHookService
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private function processController(string $data, string $type): void
+    private function processController(string $data, string $type)
     {
         $e = explode(":", $data);
         $controllerClass = self::CONTROLLERS_CLASS_NAME_DEFAULT . "\\" . $type . "\\" . $e[0] . "Controller";

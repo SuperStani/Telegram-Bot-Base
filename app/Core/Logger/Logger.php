@@ -4,38 +4,17 @@
 namespace App\Core\Logger;
 
 use App\Configs\GeneralConfigurations;
+use Exception;
 
 class Logger implements LoggerInterface
 {
-    private static int $defaultBiMask = LoggingDestination::LOG_TO_FILE;
-
-    private static string $delimiter = "  ";
-
     protected const DATETIME_FORMAT = "Y-m-d H:i:s";
+    private static int $defaultBiMask = LoggingDestination::LOG_TO_FILE;
+    private static string $delimiter = "  ";
 
     public function debug(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
     {
         $this->makeLog(LogLevels::DEBUG, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
-    }
-
-    public function info(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
-    {
-        $this->makeLog(LogLevels::INFO, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
-    }
-
-    public function warning(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
-    {
-        $this->makeLog(LogLevels::WARNING, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
-    }
-
-    public function error(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
-    {
-        $this->makeLog(LogLevels::ERROR, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
-    }
-
-    public function critical(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
-    {
-        $this->makeLog(LogLevels::CRITICAL, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
     }
 
     protected function makeLog(int $logLevel, string $message, ?string $optional, ?string $dataText, ?int $bit_mask)
@@ -57,17 +36,6 @@ class Logger implements LoggerInterface
                 break;
         }
 
-    }
-
-    protected function prepareMessageLog(string $file, string $function, string $message, ?string $optional, ?string $dataText, ?int $logLevel): string
-    {
-        $delimiter = self::$delimiter;
-
-        if ($logLevel > LogLevels::INFO) {
-            return "{$file}{$delimiter}{$function}{$delimiter}{$message}{$delimiter}{$optional}{$delimiter}{$dataText}";
-        } else {
-            return "{$message}{$delimiter}{$optional}{$delimiter}{$dataText}";
-        }
     }
 
     protected function logToSyslog(int $logLevel, string $file, string $function, string $message, ?string $optional, ?string $dataText)
@@ -92,8 +60,19 @@ class Logger implements LoggerInterface
                     syslog(LOG_CRIT, $logText);
                     break;
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             echo $ex->getMessage() . PHP_EOL;
+        }
+    }
+
+    protected function prepareMessageLog(string $file, string $function, string $message, ?string $optional, ?string $dataText, ?int $logLevel): string
+    {
+        $delimiter = self::$delimiter;
+
+        if ($logLevel > LogLevels::INFO) {
+            return "{$file}{$delimiter}{$function}{$delimiter}{$message}{$delimiter}{$optional}{$delimiter}{$dataText}";
+        } else {
+            return "{$message}{$delimiter}{$optional}{$delimiter}{$dataText}";
         }
     }
 
@@ -118,9 +97,29 @@ class Logger implements LoggerInterface
                     LoggingDestination::LOG_TO_SYSLOG
                 );
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             $this->logToSyslog($logLevel, $file, $function, $message, $optional, $dataText);
             $this->critical($ex->getMessage(), "Line: " . $ex->getLine(), null, LoggingDestination::LOG_TO_SYSLOG);
         }
+    }
+
+    public function critical(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
+    {
+        $this->makeLog(LogLevels::CRITICAL, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
+    }
+
+    public function info(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
+    {
+        $this->makeLog(LogLevels::INFO, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
+    }
+
+    public function warning(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
+    {
+        $this->makeLog(LogLevels::WARNING, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
+    }
+
+    public function error(string $message, ?string $optional = null, ?string $dataText = null, ?int $bit_mask = null)
+    {
+        $this->makeLog(LogLevels::ERROR, $message, $optional, $dataText, $bit_mask ?? self::$defaultBiMask);
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Integrations\Telegram;
 
 
+use CURLFile;
+
 abstract class Api
 {
 
@@ -36,7 +38,7 @@ abstract class Api
 
     public static function setWebhook(
         string $url,
-        \CURLFile $certificate = null,
+        CURLFile $certificate = null,
         string $ip_address = null,
         int $max_connections = null,
         array $allowed_updates = null,
@@ -1462,7 +1464,7 @@ abstract class Api
 
     public static function setChatPhoto(
         $chat_id,
-        \CURLFile $photo
+        CURLFile $photo
     ): ?array
     {
         $args = [
@@ -1602,6 +1604,16 @@ abstract class Api
         return Request::get('getChatMemberCount', $args);
     }
 
+    public static function isFollower($chat_id, $user_id): int
+    {
+        $info = self::getChatMember($chat_id, $user_id);
+        if ($info->ok == false || $info->result->status == "left") {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
     public static function getChatMember(
         $chat_id,
         int $user_id
@@ -1613,16 +1625,6 @@ abstract class Api
         ];
 
         return Request::get('getChatMember', $args);
-    }
-
-    public static function isFollower($chat_id, $user_id): int
-    {
-        $info = self::getChatMember($chat_id, $user_id);
-        if ($info->ok == false || $info->result->status == "left") {
-            return 0;
-        } else {
-            return 1;
-        }
     }
 
     public static function setChatStickerSet(
@@ -2037,7 +2039,7 @@ abstract class Api
 
     public static function uploadStickerFile(
         int $user_id,
-        \CURLFile $png_sticker
+        CURLFile $png_sticker
     ): ?array
     {
         $args = [
@@ -2053,8 +2055,8 @@ abstract class Api
         string $name,
         string $title,
         $png_sticker = null,
-        \CURLFile $tgs_sticker = null,
-        \CURLFile $webm_sticker = null,
+        CURLFile $tgs_sticker = null,
+        CURLFile $webm_sticker = null,
         string $emojis = null,
         bool $contains_masks = null,
         array $mask_position = null
@@ -2097,8 +2099,8 @@ abstract class Api
         int $user_id,
         string $name,
         $png_sticker = null,
-        \CURLFile $tgs_sticker = null,
-        \CURLFile $webm_sticker = null,
+        CURLFile $tgs_sticker = null,
+        CURLFile $webm_sticker = null,
         string $emojis = null,
         array $mask_position = null
     ): ?array
