@@ -2,9 +2,6 @@
 
 namespace App\Integrations\Telegram\Enums;
 
-use App\Integration\Telegram\Enums\Chat;
-use App\Integration\Telegram\Enums\Photo;
-use App\Integration\Telegram\Enums\Video;
 use App\Integrations\Telegram\Enums\Types\UpdateType;
 use App\Integrations\Telegram\TelegramClient;
 

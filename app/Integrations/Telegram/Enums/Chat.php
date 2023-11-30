@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Integration\Telegram\Enums;
+namespace App\Integrations\Telegram\Enums;
 
 
 class Chat
