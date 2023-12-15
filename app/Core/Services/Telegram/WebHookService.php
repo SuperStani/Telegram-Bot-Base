@@ -7,8 +7,10 @@ namespace App\Core\Services\Telegram;
 use App\Core\Controllers\Telegram\UserController;
 use App\Core\Logger\LoggerInterface;
 use App\Integrations\Telegram\Enums\Message;
+use App\Integrations\Telegram\Enums\Query;
 use App\Integrations\Telegram\Enums\Types\UpdateType;
 use App\Integrations\Telegram\Enums\Update;
+use App\Integrations\Telegram\TelegramClient;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -34,7 +36,8 @@ class WebHookService
     {
         $update = $this->container->get(Update::class);
         if ($update->getType() == UpdateType::CALLBACK_QUERY) {
-            $this->processCallbackControllerClass($update->getData()->data);
+            $query = $this->container->get(Query::class);
+            $this->processCallbackControllerClass($query->data);
         } else if ($update->getType() == UpdateType::MESSAGE) {
             $this->processMessageControllerClass();
         } else {

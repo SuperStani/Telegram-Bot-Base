@@ -9,9 +9,9 @@ abstract class Api
 {
 
     public static function getUpdates(
-        int $offset = null,
-        int $limit = null,
-        int $timeout = null,
+        int   $offset = null,
+        int   $limit = null,
+        int   $timeout = null,
         array $allowed_updates = null
     ): ?array
     {
@@ -37,12 +37,12 @@ abstract class Api
     }
 
     public static function setWebhook(
-        string $url,
+        string   $url,
         CURLFile $certificate = null,
-        string $ip_address = null,
-        int $max_connections = null,
-        array $allowed_updates = null,
-        bool $drop_pending_updates = null
+        string   $ip_address = null,
+        int      $max_connections = null,
+        array    $allowed_updates = null,
+        bool     $drop_pending_updates = null
     ): ?array
     {
         $args = [
@@ -246,14 +246,13 @@ abstract class Api
         $chat_id,
         $photo,
         string $caption = null,
-        array $reply_markup = nul,
-        string $parse_mode = null,
-        array $caption_entities = null,
-        bool $disable_notification = null,
-        bool $protect_content = null,
-        int $reply_to_message_id = null,
-        bool $allow_sending_without_reply = null
-
+        ?array $reply_markup = null,
+        ?string $parse_mode = null,
+        ?array $caption_entities = null,
+        ?bool $disable_notification = null,
+        ?bool $protect_content = null,
+        ?int $reply_to_message_id = null,
+        ?bool $allow_sending_without_reply = null
     ): ?array
     {
         $args = [
@@ -1654,9 +1653,9 @@ abstract class Api
     public static function answerCallbackQuery(
         string $callback_query_id,
         string $text = null,
-        bool $show_alert = null,
+        bool   $show_alert = null,
         string $url = null,
-        int $cache_time = null
+        int    $cache_time = null
     ): ?array
     {
         $args = [
@@ -1683,8 +1682,8 @@ abstract class Api
     }
 
     public static function setMyCommands(
-        array $commands,
-        array $scope = null,
+        array  $commands,
+        array  $scope = null,
         string $language_code = null
     ): ?array
     {
@@ -1704,7 +1703,7 @@ abstract class Api
     }
 
     public static function deleteMyCommands(
-        array $scope = null,
+        array  $scope = null,
         string $language_code = null
     ): ?array
     {
@@ -1722,7 +1721,7 @@ abstract class Api
     }
 
     public static function getMyCommands(
-        array $scope = null,
+        array  $scope = null,
         string $language_code = null
     ): ?array
     {
@@ -1740,7 +1739,7 @@ abstract class Api
     }
 
     public static function setChatMenuButton(
-        int $chat_id = null,
+        int   $chat_id = null,
         array $menu_button = null
     ): ?array
     {
@@ -1772,7 +1771,7 @@ abstract class Api
 
     public static function setMyDefaultAdministratorRights(
         array $rights = null,
-        bool $for_channels = null
+        bool  $for_channels = null
     ): ?array
     {
         $args = [];
@@ -2038,7 +2037,7 @@ abstract class Api
     }
 
     public static function uploadStickerFile(
-        int $user_id,
+        int      $user_id,
         CURLFile $png_sticker
     ): ?array
     {
@@ -2051,15 +2050,15 @@ abstract class Api
     }
 
     public static function createNewStickerSet(
-        int $user_id,
-        string $name,
-        string $title,
-        $png_sticker = null,
+        int      $user_id,
+        string   $name,
+        string   $title,
+                 $png_sticker = null,
         CURLFile $tgs_sticker = null,
         CURLFile $webm_sticker = null,
-        string $emojis = null,
-        bool $contains_masks = null,
-        array $mask_position = null
+        string   $emojis = null,
+        bool     $contains_masks = null,
+        array    $mask_position = null
     ): ?array
     {
         $args = [
@@ -2096,13 +2095,13 @@ abstract class Api
     }
 
     public static function addStickerToSet(
-        int $user_id,
-        string $name,
-        $png_sticker = null,
+        int      $user_id,
+        string   $name,
+                 $png_sticker = null,
         CURLFile $tgs_sticker = null,
         CURLFile $webm_sticker = null,
-        string $emojis = null,
-        array $mask_position = null
+        string   $emojis = null,
+        array    $mask_position = null
     ): ?array
     {
         $args = [
@@ -2135,7 +2134,7 @@ abstract class Api
 
     public static function setStickerPositionInSet(
         string $sticker,
-        int $position
+        int    $position
     ): ?array
     {
         $args = [
@@ -2159,8 +2158,8 @@ abstract class Api
 
     public static function setStickerSetThumb(
         string $name,
-        int $user_id,
-        $thumb = null
+        int    $user_id,
+               $thumb = null
     ): ?array
     {
         $args = [
@@ -2177,9 +2176,9 @@ abstract class Api
 
     public static function answerInlineQuery(
         string $inline_query_id,
-        array $results,
-        int $cache_time = null,
-        bool $is_personal = null,
+        array  $results,
+        int    $cache_time = null,
+        bool   $is_personal = null,
         string $next_offset = null,
         string $switch_pm_text = null,
         string $switch_pm_parameter = null
@@ -2215,7 +2214,7 @@ abstract class Api
 
     public static function answerWebAppQuery(
         string $web_app_query_id,
-        array $result
+        array  $result
     ): ?array
     {
         $args = [
@@ -2351,8 +2350,8 @@ abstract class Api
 
     public static function answerShippingQuery(
         string $shipping_query_id,
-        bool $ok,
-        array $shipping_options = null,
+        bool   $ok,
+        array  $shipping_options = null,
         string $error_message = null
     ): ?array
     {
@@ -2374,7 +2373,7 @@ abstract class Api
 
     public static function answerPreCheckoutQuery(
         string $pre_checkout_query_id,
-        bool $ok,
+        bool   $ok,
         string $error_message = null
     ): ?array
     {
@@ -2391,7 +2390,7 @@ abstract class Api
     }
 
     public static function setPassportDataErrors(
-        int $user_id,
+        int   $user_id,
         array $errors
     ): ?array
     {
@@ -2404,13 +2403,13 @@ abstract class Api
     }
 
     public static function sendGame(
-        int $chat_id,
+        int    $chat_id,
         string $game_short_name,
-        bool $disable_notification = null,
-        bool $protect_content = null,
-        int $reply_to_message_id = null,
-        bool $allow_sending_without_reply = null,
-        array $reply_markup = null
+        bool   $disable_notification = null,
+        bool   $protect_content = null,
+        int    $reply_to_message_id = null,
+        bool   $allow_sending_without_reply = null,
+        array  $reply_markup = null
     ): ?array
     {
         $args = [
@@ -2442,12 +2441,12 @@ abstract class Api
     }
 
     public static function setGameScore(
-        int $user_id,
-        int $score,
-        bool $force = null,
-        bool $disable_edit_message = null,
-        int $chat_id = null,
-        int $message_id = null,
+        int    $user_id,
+        int    $score,
+        bool   $force = null,
+        bool   $disable_edit_message = null,
+        int    $chat_id = null,
+        int    $message_id = null,
         string $inline_message_id = null
     ): ?array
     {
@@ -2480,9 +2479,9 @@ abstract class Api
     }
 
     public static function getGameHighScores(
-        int $user_id,
-        int $chat_id = null,
-        int $message_id = null,
+        int    $user_id,
+        int    $chat_id = null,
+        int    $message_id = null,
         string $inline_message_id = null
     ): ?array
     {
