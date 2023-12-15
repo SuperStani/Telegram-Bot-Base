@@ -1,16 +1,15 @@
 <?php
 
-use  App\Core\Services\Telegram\UpdateService;
 use App\Configs\DatabaseCredentials;
 use App\Configs\RedisConfigurations;
 use App\Core\Controllers\Cache\RedisController;
 use App\Core\Logger\Logger;
 use App\Core\Logger\LoggerInterface;
 use App\Core\ORM\DB;
+use App\Core\Services\Telegram\UpdateService;
 use App\Integrations\Telegram\Enums\Update;
+use DI\ContainerBuilder;
 use Psr\Container\ContainerInterface;
-
-use \DI\ContainerBuilder;
 use function DI\factory;
 
 

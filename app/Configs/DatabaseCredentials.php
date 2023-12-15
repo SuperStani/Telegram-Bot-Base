@@ -12,5 +12,5 @@ interface DatabaseCredentials
 
     public const PASSWORD = "";
 
-    public const DATABASE = "";
+    public const DATABASE = "ScontiSharkClub";
 }

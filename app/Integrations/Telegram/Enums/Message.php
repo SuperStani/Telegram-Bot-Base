@@ -2,9 +2,7 @@
 
 namespace App\Integrations\Telegram\Enums;
 
-use App\Integration\Telegram\Enums\Chat;
-use App\Integration\Telegram\Enums\Photo;
-use App\Integration\Telegram\Enums\Video;
+use App\Core\Logger\LoggerInterface;
 use App\Integrations\Telegram\Enums\Types\UpdateType;
 use App\Integrations\Telegram\TelegramClient;
 
@@ -15,14 +13,14 @@ class Message
     public Chat $chat;
     public ?Photo $photo;
     public ?Video $video;
+    public ?array $new_chat_members;
 
     public function __construct(Update $update)
     {
-        $data = $update->getType() == UpdateType::MESSAGE ? $update->getData()->message : $update->getData()->callback_data;
-
+        $data = $update->getType() == UpdateType::MESSAGE ? $update->getData()->message : $update->getData()->callback_query->message;
         $this->id = $data->message_id;
         $this->text = $data->text ?? null;
-        $this->chat = new Chat($data->chat->id, $data->chat->first_name, $data->chat->username ?? null, $data->chat->type);
+        $this->chat = new Chat($data->chat->id, $data->chat->first_name ?? $data->chat->title, $data->chat->username ?? null, $data->chat->type);
         $this->video = isset($data->video) ?
             new Video(
                 $data->video->file_id,
@@ -36,7 +34,7 @@ class Message
             ) : null;
         $this->photo = isset($data->photo) ?
             new Photo() : null;
-        $message = null;
+        $this->new_chat_members = $data->new_chat_members ?? null;
     }
 
     public function reply(string $text, $menu = null, $parse = "Markdown", bool $disable_preview = false, $reply_to_message = null): ?array

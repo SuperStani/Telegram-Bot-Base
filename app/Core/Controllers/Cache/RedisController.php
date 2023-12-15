@@ -2,6 +2,9 @@
 
 namespace App\Core\Controllers\Cache;
 
+use Exception;
+use Redis;
+
 class RedisController
 {
 
@@ -11,7 +14,7 @@ class RedisController
 
     private ?string $socket;
 
-    private ?\Redis $redisInstance;
+    private ?Redis $redisInstance;
 
     public function __construct(string $host, int $port, ?string $socket = null)
     {
@@ -19,18 +22,6 @@ class RedisController
         $this->port = $port;
         $this->socket = $socket;
         $this->redisInstance = null;
-    }
-
-    private function initialize()
-    {
-        if ($this->redisInstance == null) {
-            $this->redisInstance = new \Redis();
-            if ($this->socket !== null) {
-                $this->redisInstance->connect($this->socket);
-            } else {
-                $this->redisInstance->connect($this->host, $this->port);
-            }
-        }
     }
 
     /**
@@ -47,26 +38,27 @@ class RedisController
     /**
      * @throws \Exception
      */
-    public function getRedis(): \Redis
+    public function getRedis(): Redis
     {
         $this->initialize();
         if ($this->redisInstance == null) {
             $this->initialize();
             if ($this->redisInstance == null) {
-                throw new \Exception("Unable to init memcached to " . $this->host . ":" . $this->port);
+                throw new Exception("Unable to init memcached to " . $this->host . ":" . $this->port);
             }
         }
         return $this->redisInstance;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function setKey($key, $value, $time = 86400) // 24 Hours
+    private function initialize()
     {
-        $this->getRedis()->set($key, $value);
-        if ($time > 0) {
-            $this->getRedis()->expire($key, $time);
+        if ($this->redisInstance == null) {
+            $this->redisInstance = new Redis();
+            if ($this->socket !== null) {
+                $this->redisInstance->connect($this->socket);
+            } else {
+                $this->redisInstance->connect($this->host, $this->port);
+            }
         }
     }
 
@@ -123,5 +115,16 @@ class RedisController
     public function replaceKey($key, $value, $time = 5)
     {
         $this->setKey($key, $value, $time);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function setKey($key, $value, $time = 86400) // 24 Hours
+    {
+        $this->getRedis()->set($key, $value);
+        if ($time > 0) {
+            $this->getRedis()->expire($key, $time);
+        }
     }
 }

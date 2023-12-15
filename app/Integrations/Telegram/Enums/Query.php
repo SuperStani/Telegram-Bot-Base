@@ -13,8 +13,8 @@ class Query
     public function __construct(Update $update, Message $message)
     {
         $update = $update->getData();
-        $this->data = $update->data ?? null;
-        $this->id = $update->id ?? null;
+        $this->data = $update->callback_query->data ?? null;
+        $this->id = $update->callback_query->id ?? null;
         $this->message = $message;
     }
 
