@@ -8,6 +8,8 @@ class UserEntity extends AbstractEntity
 
     public string|int $page;
 
+    public string $lang;
+
     /**
      * @return int
      */
@@ -38,5 +40,15 @@ class UserEntity extends AbstractEntity
     public function setPage(int|string $page): void
     {
         $this->page = $page;
+    }
+
+    public function getLang(): string
+    {
+        return $this->lang;
+    }
+
+    public function setLang(string $lang): void
+    {
+        $this->lang = $lang;
     }
 }

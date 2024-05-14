@@ -115,8 +115,7 @@ abstract class Api
         bool $protect_content = null,
         int $reply_to_message_id = null,
         bool $allow_sending_without_reply = null,
-        array $reply_markup = null,
-        string $bot_token = null
+        array $reply_markup = null
     ): ?array
     {
         $args = [
@@ -156,7 +155,7 @@ abstract class Api
             $args['reply_markup'] = json_encode($reply_markup);
         }
 
-        return Request::get('sendMessage', $args, $bot_token);
+        return Request::get('sendMessage', $args);
     }
 
     public static function forwardMessage(
