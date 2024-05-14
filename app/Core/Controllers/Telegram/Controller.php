@@ -10,7 +10,7 @@ abstract class Controller
     protected LoggerInterface $logger;
 
     public function __construct(
-        UserController $user,
+        UserController  $user,
         LoggerInterface $logger
     )
     {
@@ -20,6 +20,7 @@ abstract class Controller
 
     public function process($method, array $params)
     {
+        $this->user->save();
         return $this->{$method}(...array_values($params));
     }
 }

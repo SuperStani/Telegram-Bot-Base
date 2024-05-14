@@ -17,7 +17,7 @@ class WebAppService
         }
         $callback_data = $_GET["callback_data"] ?? null;
         $user = $_GET["to_user"] ?? null;
-        unset($_GET["callback_data"], $_GET["to_user"]);
+        unset($_GET["callback_data"], $_GET["to_user"], $_GET['hash'], $_GET['webapp']);
         $data_check_arr = [];
         foreach ($_GET as $key => $value) {
             $data_check_arr[] = $key . '=' . $value;

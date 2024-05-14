@@ -81,7 +81,9 @@ class WebHookService
             unset($e[0]);
             try {
                 $app = $this->container->get($controllerClass);
-                $app->process($method, $e);
+                if (method_exists($app, $method)) {
+                    $app->process($method, $e);
+                }
             } catch (\Exception|NotFoundExceptionInterface|ContainerExceptionInterface $e) {
                 $this->logger->error($data, $e->getMessage());
             }

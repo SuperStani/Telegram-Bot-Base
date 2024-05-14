@@ -9,11 +9,18 @@ use App\Integrations\Telegram\TelegramClient;
 class Message
 {
     public int $id;
+
     public ?string $text;
+
     public Chat $chat;
+
     public ?Photo $photo;
+
     public ?Video $video;
+
     public ?array $new_chat_members;
+
+    public ?array $keyboard;
 
     public function __construct(Update $update)
     {
@@ -24,16 +31,16 @@ class Message
         $this->video = isset($data->video) ?
             new Video(
                 $data->video->file_id,
-                $data->video->unique_id,
-                $data->video->width,
-                $data->video->height,
-                $data->video->duration,
-                $data->video->thumbnail,
-                $data->video->file_name,
-                $data->video->file_size
+                $data->video->unique_id ?? null,
+                $data->video->width ?? null,
+                $data->video->height ?? null,
+                $data->video->duration ?? null,
+                $data->video->file_name ?? null,
+                $data->video->file_size ?? null
             ) : null;
         $this->photo = isset($data->photo) ?
-            new Photo() : null;
+            new Photo($data->photo[count($data->photo) - 1]->file_id) : null;
+        $this->keyboard = isset($data->reply_markup) ? $data->reply_markup->inline_keyboard : null;
         $this->new_chat_members = $data->new_chat_members ?? null;
     }
 
